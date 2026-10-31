@@ -1,0 +1,17 @@
+{
+  "previewPort": 3000,
+  "healthPath": "/",
+  "startCommand": "docker compose -f docker-compose.base44.yml up -d",
+  "secrets": [
+    {
+      "name": "KITE_DISCORD__CLIENT_ID",
+      "description": "Discord application Client ID (Discord Developer Portal → your app → OAuth2). Needed for 'Login with Discord'.",
+      "requiredAtBoot": true
+    },
+    {
+      "name": "KITE_DISCORD__CLIENT_SECRET",
+      "description": "Discord application Client Secret (Discord Developer Portal → your app → OAuth2). Needed for 'Login with Discord'.",
+      "requiredAtBoot": true
+    }
+  ]
+}

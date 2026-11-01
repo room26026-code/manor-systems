@@ -7,6 +7,7 @@ import (
 
 	"github.com/kitecloud/kite/kite-service/internal/api/handler"
 	"github.com/kitecloud/kite/kite-service/internal/api/wire"
+	"github.com/kitecloud/kite/kite-service/internal/core/plan"
 	"github.com/kitecloud/kite/kite-service/internal/model"
 	"github.com/kitecloud/kite/kite-service/internal/store"
 	"github.com/kitecloud/kite/kite-service/internal/util"
@@ -17,7 +18,8 @@ type MessageHandler struct {
 	messageInstanceStore store.MessageInstanceStore
 	assetStore           store.AssetStore
 	appStateManager      store.AppStateManager
-	maxMessagesPerApp    int
+	planManager          *plan.PlanManager
+	maxMessagesFallback  int
 }
 
 func NewMessageHandler(
@@ -25,6 +27,7 @@ func NewMessageHandler(
 	messageInstanceStore store.MessageInstanceStore,
 	assetStore store.AssetStore,
 	appStateManager store.AppStateManager,
+	planManager *plan.PlanManager,
 	maxMessagesPerApp int,
 ) *MessageHandler {
 	return &MessageHandler{
@@ -32,8 +35,17 @@ func NewMessageHandler(
 		messageInstanceStore: messageInstanceStore,
 		assetStore:           assetStore,
 		appStateManager:      appStateManager,
-		maxMessagesPerApp:    maxMessagesPerApp,
+		planManager:          planManager,
+		maxMessagesFallback:  maxMessagesPerApp,
 	}
+}
+
+// maxMessagesPerApp is the limit of the app's active plan, falling back to the global limit.
+func (h *MessageHandler) maxMessagesPerApp(c *handler.Context) int {
+	if features := h.planManager.AppFeatures(c.Context(), c.App.ID); features.MaxMessagesPerApp > 0 {
+		return features.MaxMessagesPerApp
+	}
+	return h.maxMessagesFallback
 }
 
 func (h *MessageHandler) HandleMessageList(c *handler.Context) (*wire.MessageListResponse, error) {
@@ -55,14 +67,14 @@ func (h *MessageHandler) HandleMessageGet(c *handler.Context) (*wire.MessageGetR
 }
 
 func (h *MessageHandler) HandleMessageCreate(c *handler.Context, req wire.MessageCreateRequest) (*wire.MessageCreateResponse, error) {
-	if h.maxMessagesPerApp != 0 {
+	if maxMessages := h.maxMessagesPerApp(c); maxMessages != 0 {
 		messageCount, err := h.messageStore.CountMessagesByApp(c.Context(), c.App.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to count messages: %w", err)
 		}
 
-		if messageCount >= h.maxMessagesPerApp {
-			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of messages (%d) reached", h.maxMessagesPerApp))
+		if messageCount >= maxMessages {
+			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of messages (%d) reached", maxMessages))
 		}
 	}
 
@@ -85,7 +97,7 @@ func (h *MessageHandler) HandleMessageCreate(c *handler.Context, req wire.Messag
 }
 
 func (h *MessageHandler) HandleMessagesImport(c *handler.Context, req wire.MessagesImportRequest) (*wire.MessagesImportResponse, error) {
-	if h.maxMessagesPerApp != 0 {
+	if maxMessages := h.maxMessagesPerApp(c); maxMessages != 0 {
 		messageCount, err := h.messageStore.CountMessagesByApp(c.Context(), c.App.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to count messages: %w", err)
@@ -93,8 +105,8 @@ func (h *MessageHandler) HandleMessagesImport(c *handler.Context, req wire.Messa
 
 		newMessageCount := messageCount + len(req.Messages)
 
-		if newMessageCount > h.maxMessagesPerApp {
-			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of messages (%d) reached", h.maxMessagesPerApp))
+		if newMessageCount > maxMessages {
+			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of messages (%d) reached", maxMessages))
 		}
 	}
 

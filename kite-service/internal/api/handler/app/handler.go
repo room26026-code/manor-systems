@@ -149,6 +149,10 @@ func (h *AppHandler) HandleAppUpdate(c *handler.Context, req wire.AppUpdateReque
 }
 
 func (h *AppHandler) HandleAppStatusUpdate(c *handler.Context, req wire.AppStatusUpdateRequest) (*wire.AppStatusUpdateResponse, error) {
+	if req.DiscordStatus != nil && !h.planManager.AppFeatures(c.Context(), c.App.ID).CustomStatus {
+		return nil, handler.ErrForbidden("investor_perk_required", "Custom status is an Investor perk. Redeem an Investor purchase code on the premium page.")
+	}
+
 	var status *model.AppDiscordStatus
 	if req.DiscordStatus != nil {
 		status = &model.AppDiscordStatus{

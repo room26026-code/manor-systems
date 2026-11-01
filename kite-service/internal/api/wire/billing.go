@@ -122,6 +122,29 @@ type BillingPlan struct {
 	FeatureUsageCreditsPerMonth int  `json:"feature_usage_credits_per_month"`
 	FeatureMaxGuilds            int  `json:"feature_max_guilds"`
 	FeaturePrioritySupport      bool `json:"feature_priority_support"`
+
+	FeatureMaxCommandsPerApp       int  `json:"feature_max_commands_per_app"`
+	FeatureMaxMessagesPerApp       int  `json:"feature_max_messages_per_app"`
+	FeatureMaxEventListenersPerApp int  `json:"feature_max_event_listeners_per_app"`
+	FeatureCustomStatus            bool `json:"feature_custom_status"`
 }
 
 type BillingPlanListResponse = []*BillingPlan
+
+type RedeemCodeRequest struct {
+	Code string `json:"code" validate:"required"`
+}
+
+type RedeemCodeResponse struct {
+	PlanID    string `json:"plan_id"`
+	PlanTitle string `json:"plan_title"`
+}
+
+type Entitlement struct {
+	Type      string    `json:"type"`
+	PlanID    string    `json:"plan_id"`
+	CreatedAt time.Time `json:"created_at"`
+	EndsAt    null.Time `json:"ends_at"`
+}
+
+type EntitlementListResponse = []*Entitlement

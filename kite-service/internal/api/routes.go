@@ -161,6 +161,11 @@ func (s *APIServer) RegisterRoutes(
 	appBillingGroup.Get("/subscriptions", handler.Typed(billingHandler.HandleAppSubscriptionList))
 	appBillingGroup.Post("/checkout", handler.TypedWithBody(billingHandler.HandleAppCheckout))
 	appBillingGroup.Get("/features", handler.Typed(billingHandler.HandleFeaturesGet))
+	appBillingGroup.Get("/entitlements", handler.Typed(billingHandler.HandleAppEntitlementList))
+	appBillingGroup.Post("/redeem",
+		handler.TypedWithBody(billingHandler.HandleAppRedeemCode),
+		handler.RateLimitByUser(10, time.Minute),
+	)
 
 	// Log routes
 	logHandler := logs.NewLogHandler(logStore)
@@ -178,7 +183,7 @@ func (s *APIServer) RegisterRoutes(
 	usageGroup.Get("/by-type", handler.Typed(usageHandler.HandleUsageByTypeList))
 
 	// Command routes
-	commandsHandler := command.NewCommandHandler(commandStore, s.config.UserLimits.MaxCommandsPerApp)
+	commandsHandler := command.NewCommandHandler(commandStore, planManager, s.config.UserLimits.MaxCommandsPerApp)
 
 	commandsGroup := appGroup.Group("/commands")
 	commandsGroup.Get("/", handler.Typed(commandsHandler.HandleCommandList))
@@ -192,7 +197,7 @@ func (s *APIServer) RegisterRoutes(
 	commandGroup.Put("/enabled", handler.TypedWithBody(commandsHandler.HandleCommandUpdateEnabled))
 
 	// Event listener routes
-	eventListenerHandler := eventlistener.NewEventListenerHandler(eventListenerStore, s.config.UserLimits.MaxEventListenersPerApp)
+	eventListenerHandler := eventlistener.NewEventListenerHandler(eventListenerStore, planManager, s.config.UserLimits.MaxEventListenersPerApp)
 
 	eventListenersGroup := appGroup.Group("/event-listeners")
 	eventListenersGroup.Get("/", handler.Typed(eventListenerHandler.HandleEventListenerList))
@@ -240,6 +245,7 @@ func (s *APIServer) RegisterRoutes(
 		messageInstanceStore,
 		assetStore,
 		appStateManager,
+		planManager,
 		s.config.UserLimits.MaxMessagesPerApp,
 	)
 

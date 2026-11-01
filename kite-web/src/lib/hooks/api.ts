@@ -15,6 +15,7 @@ import {
   useEventListenerQuery,
   useEventListenersQuery,
   useAppFeaturesQuery,
+  useAppEntitlementsQuery,
   useLogSummaryQuery,
   useMessageInstancesQuery,
   useMessageQuery,
@@ -39,6 +40,7 @@ import {
   BillingPlanListResponse,
   CommandGetResponse,
   CommandListResponse,
+  EntitlementListResponse,
   EventListenerGetResponse,
   EventListenerListResponse,
   FeaturesGetResponse,
@@ -326,6 +328,15 @@ export function useAppFeatures(
   const router = useRouter();
 
   const query = useAppFeaturesQuery(router.query.appId as string);
+  return useResponseData(query, callback);
+}
+
+export function useAppEntitlements(
+  callback?: (res: APIResponse<EntitlementListResponse>) => void
+) {
+  const router = useRouter();
+
+  const query = useAppEntitlementsQuery(router.query.appId as string);
   return useResponseData(query, callback);
 }
 

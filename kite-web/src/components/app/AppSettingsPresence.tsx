@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { useAppStatusUpdateMutation } from "@/lib/api/mutations";
 import { setValidationErrors } from "@/lib/form";
-import { useApp } from "@/lib/hooks/api";
+import { useApp, useAppFeature } from "@/lib/hooks/api";
 import { useAppId } from "@/lib/hooks/params";
 import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
@@ -44,6 +44,8 @@ interface FormFields {
 
 export default function AppSettingsPresence() {
   const app = useApp();
+  const appId = useAppId();
+  const customStatusUnlocked = useAppFeature((features) => features.custom_status);
 
   const form = useForm<FormFields>({
     defaultValues: {
@@ -69,7 +71,7 @@ export default function AppSettingsPresence() {
     }
   }, [app, form]);
 
-  const updateMutation = useAppStatusUpdateMutation(useAppId());
+  const updateMutation = useAppStatusUpdateMutation(appId);
 
   const onSubmit = useCallback(
     (data: FormFields) => {
@@ -110,6 +112,25 @@ export default function AppSettingsPresence() {
   );
 
   const discordStatus = form.watch("discord_status.status");
+
+  if (customStatusUnlocked === false) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Custom Status</CardTitle>
+          <CardDescription>
+            Custom status is an Investor perk. Redeem an Investor purchase code
+            on the premium page to unlock it.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter className="border-t px-6 py-4">
+          <Button asChild variant="outline">
+            <Link href={`/apps/${appId}/premium`}>Go to premium</Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
 
   return (
     <Card>

@@ -18,14 +18,23 @@ type Plan struct {
 	FeatureUsageCreditsPerMonth int
 	FeatureMaxGuilds            int
 	FeaturePrioritySupport      bool
+
+	FeatureMaxCommandsPerApp       int
+	FeatureMaxMessagesPerApp       int
+	FeatureMaxEventListenersPerApp int
+	FeatureCustomStatus            bool
 }
 
 func (p Plan) Features() Features {
 	return Features{
-		MaxCollaborators:     p.FeatureMaxCollaborators,
-		UsageCreditsPerMonth: p.FeatureUsageCreditsPerMonth,
-		MaxGuilds:            p.FeatureMaxGuilds,
-		PrioritySupport:      p.FeaturePrioritySupport,
+		MaxCollaborators:        p.FeatureMaxCollaborators,
+		UsageCreditsPerMonth:    p.FeatureUsageCreditsPerMonth,
+		MaxGuilds:               p.FeatureMaxGuilds,
+		PrioritySupport:         p.FeaturePrioritySupport,
+		MaxCommandsPerApp:       p.FeatureMaxCommandsPerApp,
+		MaxMessagesPerApp:       p.FeatureMaxMessagesPerApp,
+		MaxEventListenersPerApp: p.FeatureMaxEventListenersPerApp,
+		CustomStatus:            p.FeatureCustomStatus,
 	}
 }
 
@@ -34,14 +43,23 @@ type Features struct {
 	UsageCreditsPerMonth int
 	MaxGuilds            int
 	PrioritySupport      bool
+
+	MaxCommandsPerApp       int
+	MaxMessagesPerApp       int
+	MaxEventListenersPerApp int
+	CustomStatus            bool
 }
 
 func (f Features) Merge(other Features) Features {
 	return Features{
-		MaxCollaborators:     max(f.MaxCollaborators, other.MaxCollaborators),
-		UsageCreditsPerMonth: max(f.UsageCreditsPerMonth, other.UsageCreditsPerMonth),
-		MaxGuilds:            max(f.MaxGuilds, other.MaxGuilds),
-		PrioritySupport:      f.PrioritySupport || other.PrioritySupport,
+		MaxCollaborators:        max(f.MaxCollaborators, other.MaxCollaborators),
+		UsageCreditsPerMonth:    max(f.UsageCreditsPerMonth, other.UsageCreditsPerMonth),
+		MaxGuilds:               max(f.MaxGuilds, other.MaxGuilds),
+		PrioritySupport:         f.PrioritySupport || other.PrioritySupport,
+		MaxCommandsPerApp:       max(f.MaxCommandsPerApp, other.MaxCommandsPerApp),
+		MaxMessagesPerApp:       max(f.MaxMessagesPerApp, other.MaxMessagesPerApp),
+		MaxEventListenersPerApp: max(f.MaxEventListenersPerApp, other.MaxEventListenersPerApp),
+		CustomStatus:            f.CustomStatus || other.CustomStatus,
 	}
 }
 

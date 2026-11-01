@@ -39,6 +39,14 @@ Services: `postgres` (16), `s3` (SeaweedFS, S3-compatible, buckets auto-created 
   start — restart `web` after changing `package.json`/`package-lock.json`.
 - Migrations are embedded; adding a file under `kite-service/internal/db/postgres/migrations` requires rebuilding
   and re-running the `migrate` service.
+- Per-app limits and the custom status perk come from the app's plan, not the global `[user_limits]` config:
+  `PlanManager.AppFeatures` merges the default plan with the app's entitlements, and the command / message /
+  event listener handlers read their limit from it (the global value is only a fallback when a plan sets 0).
+- Premium and Investor are unlocked per app with a purchase code (`POST /v1/apps/{appID}/billing/redeem`,
+  store method `RedeemCode`): the code lists live in `kite-service/internal/core/plan/codes.go`, each code is
+  single-use via the `redeemed_codes` table (migration 027) and grants a `type = "code"` entitlement. The plans
+  themselves are `hidden` in `default.toml` so they never show up in the Lemon Squeezy pricing grid; the premium
+  page renders its own tier cards in `kite-web/src/components/app/AppPremiumRedeem.tsx`.
 
 ## Verify
 

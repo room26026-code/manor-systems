@@ -36,6 +36,8 @@ import {
   EventListenerUpdateResponse,
   MessageCreateRequest,
   MessageCreateResponse,
+  RedeemCodeRequest,
+  RedeemCodeResponse,
   MessageDeleteResponse,
   MessageInstanceCreateRequest,
   MessageInstanceCreateResponse,
@@ -133,6 +135,26 @@ export function useAppStatusUpdateMutation(appId: string) {
     onSuccess: () => {
       client.invalidateQueries({
         queryKey: ["apps", appId],
+      });
+    },
+  });
+}
+
+export function useAppRedeemCodeMutation(appId: string) {
+  const client = useQueryClient();
+
+  return useMutation({
+    mutationFn: (req: RedeemCodeRequest) =>
+      apiRequest<RedeemCodeResponse>(`/v1/apps/${appId}/billing/redeem`, {
+        method: "POST",
+        body: JSON.stringify(req),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    onSuccess: () => {
+      client.invalidateQueries({
+        queryKey: ["apps", appId, "billing"],
       });
     },
   });

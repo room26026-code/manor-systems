@@ -2,11 +2,15 @@ package postgres
 
 import (
 	"context"
+	"errors"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/kitecloud/kite/kite-service/internal/db/postgres/pgmodel"
 	"github.com/kitecloud/kite/kite-service/internal/model"
+	"github.com/kitecloud/kite/kite-service/internal/store"
+	"github.com/kitecloud/kite/kite-service/internal/util"
 	"gopkg.in/guregu/null.v4"
 )
 
@@ -71,6 +75,50 @@ func (c *Client) UpdateSubscriptionEntitlement(ctx context.Context, entitlement 
 	}
 
 	return rowToEntitlement(row), nil
+}
+
+// RedeemCode claims a purchase code for an app and grants the matching plan.
+// A code can only be redeemed once; a second attempt returns store.ErrAlreadyExists.
+func (c *Client) RedeemCode(ctx context.Context, code string, planID string, appID string, now time.Time) (*model.Entitlement, error) {
+	tx, err := c.DB.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx)
+
+	if _, err := tx.Exec(ctx,
+		`INSERT INTO redeemed_codes (code, plan_id, app_id, redeemed_at) VALUES ($1, $2, $3, $4)`,
+		code, planID, appID, now,
+	); err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+			return nil, store.ErrAlreadyExists
+		}
+		return nil, err
+	}
+
+	entitlement := &model.Entitlement{
+		ID:        util.UniqueID(),
+		Type:      "code",
+		AppID:     appID,
+		PlanID:    planID,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
+
+	if _, err := tx.Exec(ctx,
+		`INSERT INTO entitlements (id, type, subscription_id, app_id, plan_id, created_at, updated_at, ends_at)
+		 VALUES ($1, $2, NULL, $3, $4, $5, $6, NULL)`,
+		entitlement.ID, entitlement.Type, appID, planID, now, now,
+	); err != nil {
+		return nil, err
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, err
+	}
+
+	return entitlement, nil
 }
 
 func rowToEntitlement(row pgmodel.Entitlement) *model.Entitlement {

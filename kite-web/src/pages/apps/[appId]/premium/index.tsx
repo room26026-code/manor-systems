@@ -2,6 +2,7 @@ import AppLayout from "@/components/app/AppLayout";
 import { Separator } from "@/components/ui/separator";
 import AppSubscriptionList from "@/components/app/AppSubscriptionList";
 import AppPricingList from "@/components/app/AppPricingList";
+import AppPremiumRedeem from "@/components/app/AppPremiumRedeem";
 
 const breadcrumbs = [
   {
@@ -18,6 +19,10 @@ export default function AppPremiumPage() {
           Manage your app&apos;s access to premium features and subscriptions.
         </p>
       </div>
+      <Separator className="my-8" />
+
+      <AppPremiumRedeem />
+
       <Separator className="my-8 xl:mb-20" />
 
       <AppPricingList />

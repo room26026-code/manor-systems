@@ -7,6 +7,7 @@ import (
 
 	"github.com/kitecloud/kite/kite-service/internal/api/handler"
 	"github.com/kitecloud/kite/kite-service/internal/api/wire"
+	"github.com/kitecloud/kite/kite-service/internal/core/plan"
 	"github.com/kitecloud/kite/kite-service/internal/model"
 	"github.com/kitecloud/kite/kite-service/internal/store"
 	"github.com/kitecloud/kite/kite-service/internal/util"
@@ -14,15 +15,25 @@ import (
 )
 
 type EventListenerHandler struct {
-	eventListenerStore      store.EventListenerStore
-	maxEventListenersPerApp int
+	eventListenerStore        store.EventListenerStore
+	planManager               *plan.PlanManager
+	maxEventListenersFallback int
 }
 
-func NewEventListenerHandler(eventListenerStore store.EventListenerStore, maxEventListenersPerApp int) *EventListenerHandler {
+func NewEventListenerHandler(eventListenerStore store.EventListenerStore, planManager *plan.PlanManager, maxEventListenersPerApp int) *EventListenerHandler {
 	return &EventListenerHandler{
-		eventListenerStore:      eventListenerStore,
-		maxEventListenersPerApp: maxEventListenersPerApp,
+		eventListenerStore:        eventListenerStore,
+		planManager:               planManager,
+		maxEventListenersFallback: maxEventListenersPerApp,
 	}
+}
+
+// maxEventListenersPerApp is the limit of the app's active plan, falling back to the global limit.
+func (h *EventListenerHandler) maxEventListenersPerApp(c *handler.Context) int {
+	if features := h.planManager.AppFeatures(c.Context(), c.App.ID); features.MaxEventListenersPerApp > 0 {
+		return features.MaxEventListenersPerApp
+	}
+	return h.maxEventListenersFallback
 }
 
 func (h *EventListenerHandler) HandleEventListenerList(c *handler.Context) (*wire.EventListenerListResponse, error) {
@@ -44,14 +55,14 @@ func (h *EventListenerHandler) HandleEventListenerGet(c *handler.Context) (*wire
 }
 
 func (h *EventListenerHandler) HandleEventListenerCreate(c *handler.Context, req wire.EventListenerCreateRequest) (*wire.EventListenerCreateResponse, error) {
-	if h.maxEventListenersPerApp != 0 {
+	if maxEventListeners := h.maxEventListenersPerApp(c); maxEventListeners != 0 {
 		eventListenerCount, err := h.eventListenerStore.CountEventListenersByApp(c.Context(), c.App.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to count event listeners: %w", err)
 		}
 
-		if eventListenerCount >= h.maxEventListenersPerApp {
-			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of event listeners (%d) reached", h.maxEventListenersPerApp))
+		if eventListenerCount >= maxEventListeners {
+			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of event listeners (%d) reached", maxEventListeners))
 		}
 	}
 
@@ -81,7 +92,7 @@ func (h *EventListenerHandler) HandleEventListenerCreate(c *handler.Context, req
 }
 
 func (h *EventListenerHandler) HandleEventListenersImport(c *handler.Context, req wire.EventListenersImportRequest) (*wire.EventListenersImportResponse, error) {
-	if h.maxEventListenersPerApp != 0 {
+	if maxEventListeners := h.maxEventListenersPerApp(c); maxEventListeners != 0 {
 		eventListenerCount, err := h.eventListenerStore.CountEventListenersByApp(c.Context(), c.App.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to count event listeners: %w", err)
@@ -89,8 +100,8 @@ func (h *EventListenerHandler) HandleEventListenersImport(c *handler.Context, re
 
 		newEventListenerCount := eventListenerCount + len(req.EventListeners)
 
-		if newEventListenerCount > h.maxEventListenersPerApp {
-			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of event listeners (%d) reached", h.maxEventListenersPerApp))
+		if newEventListenerCount > maxEventListeners {
+			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of event listeners (%d) reached", maxEventListeners))
 		}
 	}
 

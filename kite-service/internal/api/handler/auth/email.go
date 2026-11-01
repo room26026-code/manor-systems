@@ -60,12 +60,12 @@ func (h *AuthHandler) HandleEmailRegister(c *handler.Context, req wire.AuthEmail
 	}
 
 	user, err := h.userStore.CreateEmailUser(c.Context(), &model.User{
-		ID:            userID,
-		Email:         email,
-		DisplayName:   displayName,
-		DiscordID:     "email:" + userID,
-		CreatedAt:     now,
-		UpdatedAt:     now,
+		ID:          userID,
+		Email:       email,
+		DisplayName: displayName,
+		DiscordID:   "email:" + userID,
+		CreatedAt:   now,
+		UpdatedAt:   now,
 	}, string(passwordHash))
 	if err != nil {
 		return nil, fmt.Errorf("failed to create user: %w", err)

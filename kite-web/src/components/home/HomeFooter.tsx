@@ -1,4 +1,4 @@
-import logo from "@/assets/logo/orange@1024.png";
+import logo from "@/assets/logo/manor-hosing.png";
 import Link from "next/link";
 import env from "@/lib/env/client";
 
@@ -14,8 +14,8 @@ export default function HomeFooter() {
             href="/"
             className="font-bold text-xl flex items-center"
           >
-            <img src={logo.src} alt="Kite Logo" className="h-10 w-10 mr-3" />
-            <div>Kite</div>
+            <img src={logo.src} alt="MaNor Hosing Logo" className="h-10 w-10 mr-3" />
+            <div>MaNor Hosing</div>
           </Link>
         </div>
 

@@ -21,14 +21,14 @@ const features: FeatureProps[] = [
     icon: <DatabaseZapIcon />,
     title: "24/7 Hosting",
     description:
-      "Kite provides 24/7 hosting for your Discord bot, so you don't have to worry about uptime.",
+      "MaNor Hosing provides 24/7 hosting for your Discord bot, so you don't have to worry about uptime.",
   },
 
   {
     icon: <EditIcon />,
     title: "Customization",
     description:
-      "Customize the look and feel of your Discord bot with Kite's easy-to-use interface.",
+      "Customize the look and feel of your Discord bot with MaNor Hosing's easy-to-use interface.",
   },
   {
     icon: <CodeIcon />,
@@ -54,7 +54,7 @@ export default function HomeFeaturesSection() {
         In One Place
       </h2>
       <p className="md:w-3/4 mx-auto mt-4 mb-8 text-xl text-muted-foreground">
-        Kite provides all the tools you need to create a Discord bot for your
+        MaNor Hosing provides all the tools you need to create a Discord bot for your
         server.
       </p>
 

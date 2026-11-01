@@ -109,7 +109,7 @@ export default function PrivacyPolicyPage() {
           </li>
           <li>
             <p>
-              <strong>Website</strong> refers to Kite, accessible from{" "}
+              <strong>Website</strong> refers to MaNor Hosing, accessible from{" "}
               <a
                 href="https://kite.onl"
                 rel="external nofollow noopener"

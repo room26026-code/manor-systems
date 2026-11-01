@@ -84,7 +84,7 @@ export default function VariableSettingsCore() {
       <CardHeader>
         <CardTitle>Variable Settings</CardTitle>
         <CardDescription>
-          Configure how your app appears to users in Discord and Kite.
+          Configure how your app appears to users in Discord and MaNor Hosing.
         </CardDescription>
       </CardHeader>
       <Form {...form}>

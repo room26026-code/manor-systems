@@ -95,8 +95,8 @@ func (s *APIServer) RegisterRoutes(
 	}, userStore, sessionManager)
 
 	authGroup := v1Group.Group("/auth")
-	authGroup.Get("/login", authHandler.HandleAuthLogin)
-	authGroup.Get("/login/callback", authHandler.HandleAuthLoginCallback)
+	authGroup.Post("/login", handler.TypedWithBody(authHandler.HandleEmailLogin))
+	authGroup.Post("/register", handler.TypedWithBody(authHandler.HandleEmailRegister))
 	authGroup.Post("/logout", handler.Typed(authHandler.HandleAuthLogout))
 
 	// User routes

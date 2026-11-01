@@ -26,9 +26,11 @@ Services: `postgres` (16), `s3` (SeaweedFS, S3-compatible, buckets auto-created 
   In preview mode the API base URL is empty and `kite-web/next.config.mjs` rewrites `/v1/*` to `http://api:8080`,
   so session cookies stay first-party (`KITE_API__STRICT_COOKIES` is true). This rewrite only exists when
   `BASE44_PREVIEW_MODE=1`; without the flag `next.config.mjs` behaves as before.
-- The API's OAuth redirect URL is `KITE_API__PUBLIC_BASE_URL + /v1/auth/login/callback`; in the sandbox that is
-  `https://3000-$BASE44_PUBLIC_HOST_SUFFIX`. That exact URL must be registered in the Discord app's Redirects
-  for sign-in to work, and real Discord credentials are needed (dev placeholders are in `.env.base44-defaults`).
+- Sign-in is email + password: `POST /v1/auth/login` and `POST /v1/auth/register` (bcrypt hash in
+  `users.password_hash`, migration 026), then the usual session cookie. The Discord OAuth handlers still exist in
+  `internal/api/handler/auth` but are no longer routed, so the Discord login page is `kite-web/src/pages/login.tsx`.
+- The product is branded "MaNor Hosing"; the logo is `kite-web/src/assets/logo/manor-hosing.png` (also
+  `kite-web/public/logo.png` for the OG image).
 - `KITE_DISCORD__BOT_TOKEN` / `KITE_DISCORD__GUILD_ID` are optional (role handout); `KITE_OPENAI__API_KEY` and the
   Lemon Squeezy billing keys are optional — AI nodes / checkout stay non-functional without them.
 - `go build` in `kite-service` needs the `kite-web` module: it is resolved from the bind-mounted repo via `go.work`

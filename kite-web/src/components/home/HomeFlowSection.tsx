@@ -52,7 +52,7 @@ export default function HomeFlowSection() {
 
           <p className="text-muted-foreground text-xl mt-4 mb-8 ">
             Write custom logic for your slash commands, buttons, and more with
-            the visual scripting interface of Kite.
+            the visual scripting interface of MaNor Hosing.
           </p>
 
           <div className="flex flex-col gap-8">

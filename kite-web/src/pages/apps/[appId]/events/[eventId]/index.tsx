@@ -108,7 +108,7 @@ export default function AppEventListenerPage() {
   return (
     <div className="flex min-h-[100dvh] w-full flex-col">
       <Head>
-        <title>Manage Event Listener | Kite</title>
+        <title>Manage Event Listener | MaNor Hosing</title>
       </Head>
       {listener && (
         <FlowPage

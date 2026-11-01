@@ -151,7 +151,7 @@ function AppMessagePageInner() {
   return (
     <div className="flex min-h-[100dvh] w-full flex-col">
       <Head>
-        <title>Manage Message | Kite</title>
+        <title>Manage Message | MaNor Hosing</title>
       </Head>
       <div className="h-[100dvh] w-[100dvw] flex flex-col">
         <div className="flex-none">

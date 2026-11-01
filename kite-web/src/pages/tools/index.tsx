@@ -100,7 +100,7 @@ export default function ToolsPage() {
             Discord Tools
           </h1>
           <p className="text-sm text-muted-foreground">
-            A collection of useful tools around the Discord ecosystem and Kite.
+            A collection of useful tools around the Discord ecosystem and MaNor Hosing.
           </p>
         </div>
 

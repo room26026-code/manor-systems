@@ -10,6 +10,7 @@ type Features struct {
 	MaxMessagesPerApp       int  `json:"max_messages_per_app"`
 	MaxEventListenersPerApp int  `json:"max_event_listeners_per_app"`
 	CustomStatus            bool `json:"custom_status"`
+	AI                      bool `json:"ai"`
 }
 
 type FeaturesGetResponse = Features

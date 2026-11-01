@@ -127,6 +127,7 @@ type BillingPlan struct {
 	FeatureMaxMessagesPerApp       int  `json:"feature_max_messages_per_app"`
 	FeatureMaxEventListenersPerApp int  `json:"feature_max_event_listeners_per_app"`
 	FeatureCustomStatus            bool `json:"feature_custom_status"`
+	FeatureAI                      bool `json:"feature_ai"`
 }
 
 type BillingPlanListResponse = []*BillingPlan

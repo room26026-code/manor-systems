@@ -198,6 +198,7 @@ export interface BillingPlan {
   feature_max_messages_per_app: number /* int */;
   feature_max_event_listeners_per_app: number /* int */;
   feature_custom_status: boolean;
+  feature_ai: boolean;
 }
 export type BillingPlanListResponse = (BillingPlan | undefined)[];
 export interface RedeemCodeRequest {
@@ -324,6 +325,7 @@ export interface Features {
   max_messages_per_app: number /* int */;
   max_event_listeners_per_app: number /* int */;
   custom_status: boolean;
+  ai: boolean;
 }
 export type FeaturesGetResponse = Features;
 

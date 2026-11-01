@@ -130,4 +130,5 @@ type BillingPlanConfig struct {
 	FeatureMaxMessagesPerApp       int  `toml:"feature_max_messages_per_app"`
 	FeatureMaxEventListenersPerApp int  `toml:"feature_max_event_listeners_per_app"`
 	FeatureCustomStatus            bool `toml:"feature_custom_status"`
+	FeatureAI                      bool `toml:"feature_ai"`
 }

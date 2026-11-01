@@ -43,10 +43,11 @@ feature_max_collaborators = 1
 feature_usage_credits_per_month = 10000
 feature_max_guilds = 100
 feature_priority_support = false
-feature_max_commands_per_app = 25
-feature_max_messages_per_app = 25
-feature_max_event_listeners_per_app = 5
+feature_max_commands_per_app = 10
+feature_max_messages_per_app = 10
+feature_max_event_listeners_per_app = 0
 feature_custom_status = false
+feature_ai = false
 
 # Premium and Investor are not sold through checkout. They are unlocked per app with a
 # purchase code on the premium page, so they are hidden from the pricing list.
@@ -60,10 +61,11 @@ feature_max_collaborators = 1
 feature_usage_credits_per_month = 10000
 feature_max_guilds = 100
 feature_priority_support = false
-feature_max_commands_per_app = 25
+feature_max_commands_per_app = 45
 feature_max_messages_per_app = 25
 feature_max_event_listeners_per_app = 5
 feature_custom_status = false
+feature_ai = true
 
 [[billing.plans]]
 id = "investor"
@@ -75,7 +77,8 @@ feature_max_collaborators = 1
 feature_usage_credits_per_month = 10000
 feature_max_guilds = 100
 feature_priority_support = false
-feature_max_commands_per_app = 40
+feature_max_commands_per_app = 100
 feature_max_messages_per_app = 50
 feature_max_event_listeners_per_app = 15
 feature_custom_status = true
+feature_ai = true

@@ -15,26 +15,24 @@ import (
 )
 
 type EventListenerHandler struct {
-	eventListenerStore        store.EventListenerStore
-	planManager               *plan.PlanManager
-	maxEventListenersFallback int
+	eventListenerStore store.EventListenerStore
+	planManager        *plan.PlanManager
 }
 
-func NewEventListenerHandler(eventListenerStore store.EventListenerStore, planManager *plan.PlanManager, maxEventListenersPerApp int) *EventListenerHandler {
+func NewEventListenerHandler(eventListenerStore store.EventListenerStore, planManager *plan.PlanManager) *EventListenerHandler {
 	return &EventListenerHandler{
-		eventListenerStore:        eventListenerStore,
-		planManager:               planManager,
-		maxEventListenersFallback: maxEventListenersPerApp,
+		eventListenerStore: eventListenerStore,
+		planManager:        planManager,
 	}
 }
 
-// maxEventListenersPerApp is the limit of the app's active plan, falling back to the global limit.
+// maxEventListenersPerApp is the limit of the app's active plan. 0 means the plan
+// does not include event listeners at all (Basic plan).
 func (h *EventListenerHandler) maxEventListenersPerApp(c *handler.Context) int {
-	if features := h.planManager.AppFeatures(c.Context(), c.App.ID); features.MaxEventListenersPerApp > 0 {
-		return features.MaxEventListenersPerApp
-	}
-	return h.maxEventListenersFallback
+	return h.planManager.AppFeatures(c.Context(), c.App.ID).MaxEventListenersPerApp
 }
+
+var errEventListenersLocked = handler.ErrBadRequest("feature_locked", "Event listeners are not included in this app's plan. Redeem a Premium purchase code to unlock them.")
 
 func (h *EventListenerHandler) HandleEventListenerList(c *handler.Context) (*wire.EventListenerListResponse, error) {
 	eventListeners, err := h.eventListenerStore.EventListenersByApp(c.Context(), c.App.ID)
@@ -55,7 +53,9 @@ func (h *EventListenerHandler) HandleEventListenerGet(c *handler.Context) (*wire
 }
 
 func (h *EventListenerHandler) HandleEventListenerCreate(c *handler.Context, req wire.EventListenerCreateRequest) (*wire.EventListenerCreateResponse, error) {
-	if maxEventListeners := h.maxEventListenersPerApp(c); maxEventListeners != 0 {
+	if maxEventListeners := h.maxEventListenersPerApp(c); maxEventListeners == 0 {
+		return nil, errEventListenersLocked
+	} else {
 		eventListenerCount, err := h.eventListenerStore.CountEventListenersByApp(c.Context(), c.App.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to count event listeners: %w", err)
@@ -92,7 +92,9 @@ func (h *EventListenerHandler) HandleEventListenerCreate(c *handler.Context, req
 }
 
 func (h *EventListenerHandler) HandleEventListenersImport(c *handler.Context, req wire.EventListenersImportRequest) (*wire.EventListenersImportResponse, error) {
-	if maxEventListeners := h.maxEventListenersPerApp(c); maxEventListeners != 0 {
+	if maxEventListeners := h.maxEventListenersPerApp(c); maxEventListeners == 0 {
+		return nil, errEventListenersLocked
+	} else {
 		eventListenerCount, err := h.eventListenerStore.CountEventListenersByApp(c.Context(), c.App.ID)
 		if err != nil {
 			return nil, fmt.Errorf("failed to count event listeners: %w", err)

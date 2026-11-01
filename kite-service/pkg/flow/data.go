@@ -33,6 +33,16 @@ func (d FlowData) Validate() error {
 	)
 }
 
+// UsesAI reports whether the flow contains an AI action block.
+func (d FlowData) UsesAI() bool {
+	for _, node := range d.Nodes {
+		if node.Type == FlowNodeTypeActionAIChatCompletion || node.Type == FlowNodeTypeActionAISearchWeb {
+			return true
+		}
+	}
+	return false
+}
+
 type FlowNodeType string
 
 const (

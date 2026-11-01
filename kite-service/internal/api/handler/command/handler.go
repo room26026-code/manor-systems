@@ -36,6 +36,14 @@ func (h *CommandHandler) maxCommandsPerApp(c *handler.Context) int {
 	return h.maxCommandsFallback
 }
 
+// checkAIAccess rejects flows that use AI blocks unless the app's plan includes them.
+func (h *CommandHandler) checkAIAccess(c *handler.Context, data flow.FlowData) error {
+	if data.UsesAI() && !h.planManager.AppFeatures(c.Context(), c.App.ID).AI {
+		return handler.ErrBadRequest("feature_locked", "AI blocks are not included in this app's plan. Redeem a Premium purchase code to unlock them.")
+	}
+	return nil
+}
+
 func (h *CommandHandler) HandleCommandList(c *handler.Context) (*wire.CommandListResponse, error) {
 	commands, err := h.commandStore.CommandsByApp(c.Context(), c.App.ID)
 	if err != nil {
@@ -64,6 +72,10 @@ func (h *CommandHandler) HandleCommandCreate(c *handler.Context, req wire.Comman
 		if commandCount >= maxCommands {
 			return nil, handler.ErrBadRequest("resource_limit", fmt.Sprintf("maximum number of commands (%d) reached", maxCommands))
 		}
+	}
+
+	if err := h.checkAIAccess(c, req.FlowSource); err != nil {
+		return nil, err
 	}
 
 	cmdFlow, err := flow.CompileCommand(req.FlowSource)
@@ -105,6 +117,10 @@ func (h *CommandHandler) HandleCommandsImport(c *handler.Context, req wire.Comma
 
 	res := make([]*wire.Command, len(req.Commands))
 	for i, cmd := range req.Commands {
+		if err := h.checkAIAccess(c, cmd.FlowSource); err != nil {
+			return nil, err
+		}
+
 		cmdFlow, err := flow.CompileCommand(cmd.FlowSource)
 		if err != nil {
 			return nil, fmt.Errorf("failed to compile command: %w", err)
@@ -132,6 +148,10 @@ func (h *CommandHandler) HandleCommandsImport(c *handler.Context, req wire.Comma
 }
 
 func (h *CommandHandler) HandleCommandUpdate(c *handler.Context, req wire.CommandUpdateRequest) (*wire.CommandUpdateResponse, error) {
+	if err := h.checkAIAccess(c, req.FlowSource); err != nil {
+		return nil, err
+	}
+
 	cmdFlow, err := flow.CompileCommand(req.FlowSource)
 	if err != nil {
 		return nil, fmt.Errorf("failed to compile command: %w", err)

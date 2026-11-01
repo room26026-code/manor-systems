@@ -13,6 +13,7 @@ export type Template = {
   name: string;
   description: string;
   icon: LucideIcon;
+  requiresAI?: boolean;
   inputs: {
     key: string;
     label: string;
@@ -491,6 +492,7 @@ export function getAITemplate(): Template {
     name: "Ask AI",
     description: "A command and event listener to let users ask AI questions.",
     icon: BrainCircuitIcon,
+    requiresAI: true,
     inputs: [
       {
         key: "system_prompt",

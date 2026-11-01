@@ -39,9 +39,14 @@ Services: `postgres` (16), `s3` (SeaweedFS, S3-compatible, buckets auto-created 
   start — restart `web` after changing `package.json`/`package-lock.json`.
 - Migrations are embedded; adding a file under `kite-service/internal/db/postgres/migrations` requires rebuilding
   and re-running the `migrate` service.
-- Per-app limits and the custom status perk come from the app's plan, not the global `[user_limits]` config:
+- Per-app limits and perks come from the app's plan, not the global `[user_limits]` config:
   `PlanManager.AppFeatures` merges the default plan with the app's entitlements, and the command / message /
   event listener handlers read their limit from it (the global value is only a fallback when a plan sets 0).
+- Tiers (`default.toml`): Basic (default) 10 commands / 10 message templates / no event listeners / no AI blocks,
+  Premium 45 commands, Investor 100 commands. A plan value of `0` for event listeners means the plan has none —
+  creation and import are rejected with `feature_locked`. AI blocks (`action_ai_chat_completion`,
+  `action_ai_web_search`) need `feature_ai = true`; the web app hides the Ask AI template and the AI blocks from
+  the block explorer when the feature is off.
 - Premium and Investor are unlocked per app with a purchase code (`POST /v1/apps/{appID}/billing/redeem`,
   store method `RedeemCode`): the code lists live in `kite-service/internal/core/plan/codes.go`, each code is
   single-use via the `redeemed_codes` table (migration 027) and grants a `type = "code"` entitlement. The plans

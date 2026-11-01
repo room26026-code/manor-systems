@@ -23,6 +23,7 @@ type Plan struct {
 	FeatureMaxMessagesPerApp       int
 	FeatureMaxEventListenersPerApp int
 	FeatureCustomStatus            bool
+	FeatureAI                      bool
 }
 
 func (p Plan) Features() Features {
@@ -35,6 +36,7 @@ func (p Plan) Features() Features {
 		MaxMessagesPerApp:       p.FeatureMaxMessagesPerApp,
 		MaxEventListenersPerApp: p.FeatureMaxEventListenersPerApp,
 		CustomStatus:            p.FeatureCustomStatus,
+		AI:                      p.FeatureAI,
 	}
 }
 
@@ -48,6 +50,7 @@ type Features struct {
 	MaxMessagesPerApp       int
 	MaxEventListenersPerApp int
 	CustomStatus            bool
+	AI                      bool
 }
 
 func (f Features) Merge(other Features) Features {
@@ -60,6 +63,7 @@ func (f Features) Merge(other Features) Features {
 		MaxMessagesPerApp:       max(f.MaxMessagesPerApp, other.MaxMessagesPerApp),
 		MaxEventListenersPerApp: max(f.MaxEventListenersPerApp, other.MaxEventListenersPerApp),
 		CustomStatus:            f.CustomStatus || other.CustomStatus,
+		AI:                      f.AI || other.AI,
 	}
 }
 

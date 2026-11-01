@@ -5,7 +5,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/kitecloud/kite/kite-service/internal/db/postgres/pgmodel"
 	"github.com/kitecloud/kite/kite-service/internal/model"
@@ -86,12 +86,16 @@ func (c *Client) RedeemCode(ctx context.Context, code string, planID string, app
 	}
 	defer tx.Rollback(ctx)
 
-	if _, err := tx.Exec(ctx,
-		`INSERT INTO redeemed_codes (code, plan_id, app_id, redeemed_at) VALUES ($1, $2, $3, $4)`,
+	// ON CONFLICT DO NOTHING keeps the already-redeemed case out of the Postgres
+	// error log: no row is returned when the code was claimed before.
+	var inserted string
+	if err := tx.QueryRow(ctx,
+		`INSERT INTO redeemed_codes (code, plan_id, app_id, redeemed_at) VALUES ($1, $2, $3, $4)
+		 ON CONFLICT (code) DO NOTHING
+		 RETURNING code`,
 		code, planID, appID, now,
-	); err != nil {
-		var pgErr *pgconn.PgError
-		if errors.As(err, &pgErr) && pgErr.Code == "23505" {
+	).Scan(&inserted); err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, store.ErrAlreadyExists
 		}
 		return nil, err

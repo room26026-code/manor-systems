@@ -7,7 +7,7 @@ export default function RefundPolicyPage() {
       <div className="prose dark:prose-invert text-foreground mx-auto my-16 max-w-7xl px-5">
         <h1>Refund Policy</h1>
         <p>Last updated: January 20, 2025</p>
-        <p>Thank you for subscribing to Kite.onl.</p>
+        <p>Thank you for subscribing to MaNor Hosing.</p>
         <p>
           If, for any reason, You are not completely satisfied with a purchase
           We invite You to review our policy on refunds.
@@ -54,7 +54,7 @@ export default function RefundPolicyPage() {
           </li>
           <li>
             <p>
-              <strong>Website</strong> refers to Kite.onl, accessible from{" "}
+              <strong>Website</strong> refers to MaNor Hosing, accessible from{" "}
               <a
                 href="https://kite.onl"
                 rel="external nofollow noopener"

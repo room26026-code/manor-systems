@@ -14,6 +14,8 @@ import (
 	"gopkg.in/guregu/null.v4"
 )
 
+// Entitlements returns the entitlements that apply to an app. Purchases belong to
+// the app's owner, so this includes plans unlocked on any other app that owner has.
 func (c *Client) Entitlements(ctx context.Context, appID string) ([]*model.Entitlement, error) {
 	rows, err := c.Q.GetEntitlements(ctx, appID)
 	if err != nil {

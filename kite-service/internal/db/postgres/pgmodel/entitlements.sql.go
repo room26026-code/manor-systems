@@ -12,7 +12,12 @@ import (
 )
 
 const getActiveEntitlements = `-- name: GetActiveEntitlements :many
-SELECT id, type, subscription_id, app_id, plan_id, created_at, updated_at, ends_at FROM entitlements WHERE app_id = $1 AND (ends_at IS NULL OR ends_at > $2) ORDER BY created_at DESC
+SELECT e.id, e.type, e.subscription_id, e.app_id, e.plan_id, e.created_at, e.updated_at, e.ends_at
+FROM entitlements e
+JOIN apps a ON a.id = e.app_id
+WHERE a.owner_user_id = (SELECT owner_user_id FROM apps WHERE id = $1)
+  AND (e.ends_at IS NULL OR e.ends_at > $2)
+ORDER BY e.created_at DESC
 `
 
 type GetActiveEntitlementsParams struct {
@@ -50,7 +55,11 @@ func (q *Queries) GetActiveEntitlements(ctx context.Context, arg GetActiveEntitl
 }
 
 const getEntitlements = `-- name: GetEntitlements :many
-SELECT id, type, subscription_id, app_id, plan_id, created_at, updated_at, ends_at FROM entitlements WHERE app_id = $1 ORDER BY created_at DESC
+SELECT e.id, e.type, e.subscription_id, e.app_id, e.plan_id, e.created_at, e.updated_at, e.ends_at
+FROM entitlements e
+JOIN apps a ON a.id = e.app_id
+WHERE a.owner_user_id = (SELECT owner_user_id FROM apps WHERE id = $1)
+ORDER BY e.created_at DESC
 `
 
 func (q *Queries) GetEntitlements(ctx context.Context, appID string) ([]Entitlement, error) {

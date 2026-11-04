@@ -1,0 +1,14 @@
+root = "."
+tmp_dir = "/tmp/air"
+
+[build]
+  cmd = "go build -buildvcs=false -o /tmp/air/kite-service ."
+  bin = "/tmp/air/kite-service"
+  args_bin = ["server", "start"]
+  include_ext = ["go"]
+  exclude_dir = ["tmp", "node_modules", ".git", "out", "test.log"]
+  delay = 500
+  stop_on_error = true
+
+[log]
+  time = true

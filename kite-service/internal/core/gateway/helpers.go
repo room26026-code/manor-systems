@@ -55,8 +55,8 @@ func presenceForApp(app *model.App) *gateway.UpdatePresenceCommand {
 	status := discord.OnlineStatus
 	activity := discord.Activity{
 		Type:  discord.CustomActivity,
-		Name:  "kite.onl",
-		State: "🪁 Powered by Kite.onl",
+		Name:  "Manor Systems",
+		State: "🌴 Made with Manor Systems",
 	}
 
 	if app.DiscordStatus != nil {

@@ -105,7 +105,7 @@ export default function AppCommandPage() {
   return (
     <div className="flex min-h-[100dvh] w-full flex-col">
       <Head>
-        <title>Manage Command | Kite</title>
+        <title>Manage Command | MaNor Hosing</title>
       </Head>
       {cmd && (
         <>

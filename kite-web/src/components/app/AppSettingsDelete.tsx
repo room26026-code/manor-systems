@@ -32,7 +32,7 @@ export default function AppSettingsDelete() {
           <div>
             <div className="font-bold pb-1">Delete App</div>
             <div className="text-muted-foreground">
-              Deleting your app will remove it from Kite and delete all
+              Deleting your app will remove it from MaNor Hosing and delete all
               associated data.
             </div>
           </div>

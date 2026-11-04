@@ -13,14 +13,14 @@ export default function BaseLayout({
     <>
       <Head>
         <title key="title">
-          {`Kite | ${title ?? "Custom Discord Bots for Free"}`}
+          {`MaNor Hosing | ${title ?? "Custom Discord Bots for Free"}`}
         </title>
         <meta
           name="description"
           key="description"
           content={
             description ||
-            "Kite - Create Discord Bots for free with no coding required."
+            "MaNor Hosing - Create Discord Bots for free with no coding required."
           }
         />
         <meta property="og:site_name" key="og:site_name" content="kite.onl" />

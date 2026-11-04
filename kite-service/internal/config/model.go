@@ -125,4 +125,10 @@ type BillingPlanConfig struct {
 	FeatureUsageCreditsPerMonth int  `toml:"feature_usage_credits_per_month"`
 	FeatureMaxGuilds            int  `toml:"feature_max_guilds"`
 	FeaturePrioritySupport      bool `toml:"feature_priority_support"`
+
+	FeatureMaxCommandsPerApp       int  `toml:"feature_max_commands_per_app"`
+	FeatureMaxMessagesPerApp       int  `toml:"feature_max_messages_per_app"`
+	FeatureMaxEventListenersPerApp int  `toml:"feature_max_event_listeners_per_app"`
+	FeatureCustomStatus            bool `toml:"feature_custom_status"`
+	FeatureAI                      bool `toml:"feature_ai"`
 }

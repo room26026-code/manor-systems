@@ -22,9 +22,9 @@ export default function OpenBetaPopup() {
   return (
     <Card className="shadow-md max-w-96 fixed bottom-5 right-5 ml-5 z-50">
       <CardHeader className="px-5 py-4">
-        <CardTitle className="text-lg">Kite Beta 🪁</CardTitle>
+        <CardTitle className="text-lg">MaNor Hosing Beta 🪁</CardTitle>
         <CardDescription>
-          Kite is currently in open beta. You should expect stuff to break at
+          MaNor Hosing is currently in open beta. You should expect stuff to break at
           any point!
         </CardDescription>
         <Button

@@ -17,14 +17,14 @@ export default function HomeHeroSection() {
           </h2>{" "}
           with{" "}
           <h1 className="inline">
-            <span className="inline bg-gradient-to-r from-[#f9ad15] to-primary text-transparent bg-clip-text">
-              Kite
+            <span className="inline bg-gradient-to-r from-[#3399ff] to-[#0056d2] text-transparent bg-clip-text">
+              MaNor Hosing
             </span>
           </h1>
         </main>
 
         <p className="text-xl text-muted-foreground md:w-10/12 mx-auto lg:mx-0">
-          Make your own Discord Bot with Kite for free without a single line of
+          Make your own Discord Bot with MaNor Hosing for free without a single line of
           code. With support for slash commands, buttons, events, and more.
         </p>
 

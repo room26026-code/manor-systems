@@ -14,24 +14,24 @@ interface FAQProps {
 
 const FAQList: FAQProps[] = [
   {
-    question: "What is Kite?",
+    question: "What is MaNor Hosing?",
     answer:
-      "Kite is an open source platform for building and hosting Discord bots without the need to write a single line of code. It's powered by an advanced no-code editor and free to use for everyone.",
+      "MaNor Hosing is an open source platform for building and hosting Discord bots without the need to write a single line of code. It's powered by an advanced no-code editor and free to use for everyone.",
   },
   {
-    question: "Is Kite free to use?",
+    question: "Is MaNor Hosing free to use?",
     answer:
-      "Yes. Kite is open source and free to use for everyone. Your bots will be hosted 24/7 and all the necessary features are free to use!",
+      "Yes. MaNor Hosing is open source and free to use for everyone. Your bots will be hosted 24/7 and all the necessary features are free to use!",
   },
   {
     question: "Can I customize the name and avatar of my Discord bot?",
     answer:
-      "Yes. With Kite you create the bot yourself so you can customize the name and avatar however you like. You can even customize the bot's status and activity for free, without any limitations!",
+      "Yes. With MaNor Hosing you create the bot yourself so you can customize the name and avatar however you like. You can even customize the bot's status and activity for free, without any limitations!",
   },
   {
-    question: "Does Kite support slash commands and other Discord features?",
+    question: "Does MaNor Hosing support slash commands and other Discord features?",
     answer:
-      "Kite currently supports slash commands, message components, and event listeners. You can respond to slash commands and message components, and run actions based on events. We are working on adding more features!",
+      "MaNor Hosing currently supports slash commands, message components, and event listeners. You can respond to slash commands and message components, and run actions based on events. We are working on adding more features!",
   },
   {
     question: "How many servers can I add my bot to?",
@@ -41,7 +41,7 @@ const FAQList: FAQProps[] = [
   {
     question: "Can I create multiple bots?",
     answer:
-      "Yes. You can create up to 10 bots with Kite. This limit may change in the future.",
+      "Yes. You can create up to 10 bots with MaNor Hosing. This limit may change in the future.",
   },
 ];
 

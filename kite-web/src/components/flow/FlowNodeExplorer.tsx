@@ -1,4 +1,5 @@
 import { useFlowContext } from "@/lib/flow/context";
+import { useAppFeature } from "@/lib/hooks/api";
 import { NodeValues, createNode, nodeTypes } from "@/lib/flow/nodes";
 import { useReactFlow } from "@xyflow/react";
 import clsx from "clsx";
@@ -135,15 +136,25 @@ export default function FlowNodeExplorer() {
   const [category, setCategory] = useState<NodeCategory>("action");
 
   const contextType = useFlowContext((c) => c.type);
+  const aiUnlocked = useAppFeature((features) => features.ai);
 
   const sections = useMemo(() => {
     const sections = nodeCategories[category];
     if (!sections) return [];
 
-    return sections.filter(
-      (s) => !s.contextTypes || s.contextTypes.includes(contextType)
-    );
-  }, [category, contextType]);
+    return sections
+      .map((s) => ({
+        ...s,
+        nodeTypes: s.nodeTypes.filter(
+          (type) => aiUnlocked !== false || !type.startsWith("action_ai_")
+        ),
+      }))
+      .filter(
+        (s) =>
+          s.nodeTypes.length > 0 &&
+          (!s.contextTypes || s.contextTypes.includes(contextType))
+      );
+  }, [category, contextType, aiUnlocked]);
 
   return (
     <div className="w-96 h-full flex flex-col bg-muted/40">

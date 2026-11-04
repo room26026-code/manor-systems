@@ -77,7 +77,7 @@ export default function AppCreateDialog({ children }: { children: ReactNode }) {
             </div>
           </DialogTitle>
           <DialogDescription>
-            Create a new app to get started with Kite and start building your
+            Create a new app to get started with MaNor Hosing and start building your
             app!
           </DialogDescription>
         </DialogHeader>

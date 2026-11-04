@@ -14,7 +14,7 @@ export default function AppLogsPage() {
       <div>
         <h1 className="text-lg font-semibold md:text-2xl mb-1">Logs</h1>
         <p className="text-muted-foreground text-sm">
-          View the logs for your app. Some logs are produced by Kite itself, but
+          View the logs for your app. Some logs are produced by MaNor Hosing itself, but
           you can also add your own logs to your flows.
         </p>
       </div>

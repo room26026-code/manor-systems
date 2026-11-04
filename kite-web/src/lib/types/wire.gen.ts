@@ -194,8 +194,27 @@ export interface BillingPlan {
   feature_usage_credits_per_month: number /* int */;
   feature_max_guilds: number /* int */;
   feature_priority_support: boolean;
+  feature_max_commands_per_app: number /* int */;
+  feature_max_messages_per_app: number /* int */;
+  feature_max_event_listeners_per_app: number /* int */;
+  feature_custom_status: boolean;
+  feature_ai: boolean;
 }
 export type BillingPlanListResponse = (BillingPlan | undefined)[];
+export interface RedeemCodeRequest {
+  code: string;
+}
+export interface RedeemCodeResponse {
+  plan_id: string;
+  plan_title: string;
+}
+export interface Entitlement {
+  type: string;
+  plan_id: string;
+  created_at: string /* RFC3339 */;
+  ends_at: null | string /* RFC3339 */;
+}
+export type EntitlementListResponse = (Entitlement | undefined)[];
 
 //////////
 // source: collaborator.go
@@ -302,6 +321,11 @@ export interface Features {
   usage_credits_per_month: number /* int */;
   max_guilds: number /* int */;
   priority_support: boolean;
+  max_commands_per_app: number /* int */;
+  max_messages_per_app: number /* int */;
+  max_event_listeners_per_app: number /* int */;
+  custom_status: boolean;
+  ai: boolean;
 }
 export type FeaturesGetResponse = Features;
 

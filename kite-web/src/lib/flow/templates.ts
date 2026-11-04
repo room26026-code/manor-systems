@@ -8,11 +8,16 @@ import {
   LucideIcon,
   UserRoundPlusIcon,
 } from "lucide-react";
+import { getInvestorTemplates } from "./templates-investor";
+import { getPremiumTemplates } from "./templates-premium";
+
+export type TemplateTier = "premium" | "investor";
 
 export type Template = {
   name: string;
   description: string;
   icon: LucideIcon;
+  tier?: TemplateTier;
   requiresAI?: boolean;
   inputs: {
     key: string;
@@ -41,7 +46,13 @@ export type Template = {
 };
 
 export function getTemplates() {
-  return [getModerationTemplate(), getAITemplate(), getWelcomerTemplate()];
+  return [
+    getModerationTemplate(),
+    getAITemplate(),
+    getWelcomerTemplate(),
+    ...getPremiumTemplates(),
+    ...getInvestorTemplates(),
+  ];
 }
 
 export function prepareTemplateFlow(flow: {
